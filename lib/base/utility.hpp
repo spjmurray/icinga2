@@ -141,6 +141,11 @@ public:
 
 	static String ValidateUTF8(const String& input);
 
+	static String CreateTempFile(const String& path, std::fstream& fp);
+#ifdef _WIN32
+	static int MksTemp (char *tmpl);
+#endif /* _WIN32 */
+
 private:
 	Utility(void);
 	static void CollectPaths(const String& path, std::vector<String>& paths);
