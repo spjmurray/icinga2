@@ -121,10 +121,12 @@ namespace Icinga
 			String result = "";
 
 			using (Process proc = Process.Start(psi)) {
-				proc.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs args) {
+				proc.ErrorDataReceived += delegate (object sender, DataReceivedEventArgs args)
+				{
 					result += args.Data + "\r\n";
 				};
-				proc.OutputDataReceived += delegate(object sender, DataReceivedEventArgs args) {
+				proc.OutputDataReceived += delegate (object sender, DataReceivedEventArgs args)
+				{
 					result += args.Data + "\r\n";
 				};
 				proc.BeginOutputReadLine();
@@ -185,7 +187,8 @@ namespace Icinga
 			if (rdoNewMaster.Checked)
 				args += " --master";
 
-			Invoke((MethodInvoker)delegate {
+			Invoke((MethodInvoker)delegate
+			{
 				string master_host, master_port;
 				GetMasterHostPort(out master_host, out master_port);
 
@@ -193,7 +196,7 @@ namespace Icinga
 
 				foreach (ListViewItem lvi in lvwEndpoints.Items) {
 					args += " --endpoint " + lvi.SubItems[0].Text;
-					
+
 					if (lvi.SubItems.Count > 1)
 						args += "," + lvi.SubItems[1].Text + "," + lvi.SubItems[2].Text;
 				}
@@ -223,7 +226,7 @@ namespace Icinga
 			SetConfigureStatus(50, "Setting ACLs for the Icinga 2 directory...");
 			DirectoryInfo di = new DirectoryInfo(Program.Icinga2InstallDir);
 			DirectorySecurity ds = di.GetAccessControl();
-			FileSystemAccessRule rule = new FileSystemAccessRule("NT AUTHORITY\\NetworkService",
+			FileSystemAccessRule rule = new FileSystemAccessRule(txtUser.Text,
 				FileSystemRights.Modify,
 				InheritanceFlags.ObjectInherit | InheritanceFlags.ContainerInherit, PropagationFlags.None, AccessControlType.Allow);
 			ds.AddAccessRule(rule);
@@ -243,14 +246,13 @@ namespace Icinga
 			}
 
 			if (!RunProcess(Program.Icinga2InstallDir + "\\sbin\\icinga2.exe",
-				"--scm-install daemon",
+				"--scm-install --scm-user \"" + txtUser.Text + "\" daemon",
 				out output)) {
 				ShowErrorText(output);
 				return;
 			}
 
-			if (chkInstallNSCP.Checked)
-			{
+			if (chkInstallNSCP.Checked) {
 				SetConfigureStatus(85, "Waiting for NSClient++ installation to complete...");
 
 				Process proc = new Process();
@@ -337,6 +339,11 @@ namespace Icinga
 
 				if (rdoListener.Checked && (txtListenerPort.Text == "")) {
 					Warning("You need to specify a listener port.");
+					return;
+				}
+
+				if (txtUser.Text.Length == 0) {
+					Warning("Icinga2 user may not be empty.");
 					return;
 				}
 			}
@@ -496,6 +503,13 @@ namespace Icinga
 			while (lvwEndpoints.SelectedItems.Count > 0) {
 				lvwEndpoints.Items.Remove(lvwEndpoints.SelectedItems[0]);
 			}
-        }
+		}
+
+		private void chkDifferentUser_CheckedChanged(object sender, EventArgs e)
+		{
+			txtUser.ReadOnly = !txtUser.ReadOnly;
+			if (txtUser.ReadOnly)
+				txtUser.Text = "NT AUTHORITY\\NetworkService";
+		}
 	}
 }
