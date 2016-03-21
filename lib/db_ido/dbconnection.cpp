@@ -224,6 +224,9 @@ void DbConnection::ProgramStatusHandler(void)
 
 void DbConnection::CleanUpHandler(void)
 {
+	/* Clean notification insert ids */
+	CleanNotificationInsertIDs();
+
 	long now = static_cast<long>(Utility::GetTime());
 
 	struct {
@@ -323,24 +326,47 @@ DbReference DbConnection::GetInsertID(const DbType::Ptr& type, const DbReference
 	return it->second;
 }
 
-void DbConnection::SetNotificationInsertID(const CustomVarObject::Ptr& obj, const DbReference& dbref)
+void DbConnection::SetNotificationInsertID(const CustomVarObject::Ptr& obj, double ts, const DbReference& dbref)
 {
 	if (dbref.IsValid())
-		m_NotificationInsertIDs[obj] = dbref;
+		m_NotificationInsertIDs[std::make_pair(obj, ts)] = dbref;
 	else
-		m_NotificationInsertIDs.erase(obj);
+		m_NotificationInsertIDs.erase(std::make_pair(obj, ts));
 }
 
-DbReference DbConnection::GetNotificationInsertID(const CustomVarObject::Ptr& obj) const
+DbReference DbConnection::GetNotificationInsertID(const CustomVarObject::Ptr& obj, double ts) const
 {
-	std::map<CustomVarObject::Ptr, DbReference>::const_iterator it;
+	std::map<std::pair<CustomVarObject::Ptr, double>, DbReference>::const_iterator it;
 
-	it = m_NotificationInsertIDs.find(obj);
+	it = m_NotificationInsertIDs.find(std::make_pair(obj, ts));
 
 	if (it == m_NotificationInsertIDs.end())
 		return DbReference();
 
 	return it->second;
+}
+
+void DbConnection::CleanNotificationInsertIDs(void)
+{
+	std::map<std::pair<CustomVarObject::Ptr, double>, DbReference>::const_iterator it;
+
+	std::vector<std::pair<CustomVarObject::Ptr, double> > remove;
+
+	for (it = m_NotificationInsertIDs.begin(); it != m_NotificationInsertIDs.end(); it++) {
+
+		std::pair<CustomVarObject::Ptr, double> key = it->first;
+
+		/* clear all historical insert ids older than 3600s */
+		if (key.second < Utility::GetTime() - 3600) {
+			Log(LogDebug, "DbConnection")
+			    << "Removing notification id '" << it->second << "' and timestamp '"
+			    << key.second << "' for notification '" << key.first->GetName() << "'.";
+			remove.push_back(key);
+		}
+	}
+
+	for (size_t i = 0; i < remove.size(); i++)
+		m_NotificationInsertIDs.erase(remove[i]);
 }
 
 void DbConnection::SetObjectActive(const DbObject::Ptr& dbobj, bool active)

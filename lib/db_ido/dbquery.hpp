@@ -68,6 +68,7 @@ struct I2_DB_IDO_API DbQuery
 	Dictionary::Ptr WhereCriteria;
 	intrusive_ptr<DbObject> Object;
 	intrusive_ptr<CustomVarObject> NotificationObject;
+	double NotificationObjectTime;
 	bool ConfigUpdate;
 	bool StatusUpdate;
 	WorkQueuePriority Priority;

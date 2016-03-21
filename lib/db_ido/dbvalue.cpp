@@ -48,6 +48,11 @@ Value DbValue::FromObjectInsertID(const Value& value)
 	return new DbValue(DbValueObjectInsertID, value);
 }
 
+Value DbValue::FromNotificationInsertID(const Value& value)
+{
+	return new DbValue(DbValueNotificationInsertID, value);
+}
+
 bool DbValue::IsTimestamp(const Value& value)
 {
 	if (!value.IsObjectType<DbValue>())
@@ -73,6 +78,15 @@ bool DbValue::IsObjectInsertID(const Value& value)
 
 	DbValue::Ptr dbv = value;
 	return dbv->GetType() == DbValueObjectInsertID;
+}
+
+bool DbValue::IsNotificationInsertID(const Value& value)
+{
+	if (!value.IsObjectType<DbValue>())
+		return false;
+
+	DbValue::Ptr dbv = value;
+	return dbv->GetType() == DbValueNotificationInsertID;
 }
 
 Value DbValue::ExtractValue(const Value& value)

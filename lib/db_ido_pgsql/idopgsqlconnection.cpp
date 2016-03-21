@@ -583,14 +583,6 @@ bool IdoPgsqlConnection::FieldToEscapedString(const String& key, const Value& va
 	} else if (key == "session_token") {
 		*result = m_SessionToken;
 		return true;
-	} else if (key == "notification_id") {
-		DbReference ref = GetNotificationInsertID(value);
-
-		if (!ref.IsValid())
-			return false;
-
-		*result = static_cast<long>(ref);
-		return true;
 	}
 
 	Value rawvalue = DbValue::ExtractValue(value);
@@ -630,6 +622,15 @@ bool IdoPgsqlConnection::FieldToEscapedString(const String& key, const Value& va
 		*result = Value(msgbuf.str());
 	} else if (DbValue::IsTimestampNow(value)) {
 		*result = "NOW()";
+	} else if (DbValue::IsNotificationInsertID(value)) {
+		Array::Ptr val = rawvalue;
+		DbReference ref = GetNotificationInsertID(val->Get(0), val->Get(1));
+
+		if (!ref.IsValid())
+			return false;
+
+		*result = static_cast<long>(ref);
+		return true;
 	} else {
 		Value fvalue;
 
@@ -849,12 +850,13 @@ void IdoPgsqlConnection::InternalExecuteQuery(const DbQuery& query, DbQueryType 
 			SetStatusUpdate(query.Object, true);
 	}
 
-	if (type == DbQueryInsert && query.Table == "notifications" && query.NotificationObject) { // FIXME remove hardcoded table name
+	/* Update cached notification id for this query. */
+	if (type == DbQueryInsert && query.Table == "notifications" && query.NotificationObject) {
 		String idField = "notification_id";
 		DbReference seqval = GetSequenceValue(GetTablePrefix() + query.Table, idField);
-		SetNotificationInsertID(query.NotificationObject, seqval);
+		SetNotificationInsertID(query.NotificationObject, query.NotificationObjectTime, seqval);
 		Log(LogDebug, "IdoPgsqlConnection")
-		    << "saving contactnotification notification_id=" << Convert::ToString(seqval);
+		    << "Saving contactnotification notification_id '" << static_cast<long>(seqval) << "' for notification '" << query.NotificationObject->GetName() << "' with timestamp '" << query.NotificationObjectTime << "'.";
 	}
 }
 

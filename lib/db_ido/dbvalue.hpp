@@ -32,6 +32,7 @@ enum DbValueType
 	DbValueTimestamp,
 	DbValueTimestampNow,
 	DbValueObjectInsertID,
+	DbValueNotificationInsertID
 };
 
 /**
@@ -50,10 +51,12 @@ public:
 	static Value FromTimestampNow(void);
 	static Value FromValue(const Value& value);
 	static Value FromObjectInsertID(const Value& value);
+	static Value FromNotificationInsertID(const Value& value);
 
 	static bool IsTimestamp(const Value& value);
 	static bool IsTimestampNow(const Value& value);
 	static bool IsObjectInsertID(const Value& value);
+	static bool IsNotificationInsertID(const Value& value);
 
 	static Value ExtractValue(const Value& value);
 

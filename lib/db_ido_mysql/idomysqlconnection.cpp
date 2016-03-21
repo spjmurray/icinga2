@@ -704,14 +704,6 @@ bool IdoMysqlConnection::FieldToEscapedString(const String& key, const Value& va
 	} else if (key == "session_token") {
 		*result = m_SessionToken;
 		return true;
-	} else if (key == "notification_id") {
-		DbReference ref = GetNotificationInsertID(value);
-
-		if (!ref.IsValid())
-			return false;
-
-		*result = static_cast<long>(ref);
-		return true;
 	}
 
 	Value rawvalue = DbValue::ExtractValue(value);
@@ -752,6 +744,15 @@ bool IdoMysqlConnection::FieldToEscapedString(const String& key, const Value& va
 		*result = Value(msgbuf.str());
 	} else if (DbValue::IsTimestampNow(value)) {
 		*result = "NOW()";
+	} else if (DbValue::IsNotificationInsertID(value)) {
+		Array::Ptr val = rawvalue;
+		DbReference ref = GetNotificationInsertID(val->Get(0), val->Get(1));
+
+		if (!ref.IsValid())
+			return false;
+
+		*result = static_cast<long>(ref);
+		return true;
 	} else {
 		Value fvalue;
 
@@ -969,10 +970,12 @@ void IdoMysqlConnection::FinishExecuteQuery(const DbQuery& query, int type, bool
 			SetStatusUpdate(query.Object, true);
 	}
 
-	if (type == DbQueryInsert && query.Table == "notifications" && query.NotificationObject) { // FIXME remove hardcoded table name
-		SetNotificationInsertID(query.NotificationObject, GetLastInsertID());
+	/* Update cached notification id for this query. */
+	if (type == DbQueryInsert && query.Table == "notifications" && query.NotificationObject) {
+		long notification_id = GetLastInsertID();
+		SetNotificationInsertID(query.NotificationObject, query.NotificationObjectTime, notification_id);
 		Log(LogDebug, "IdoMysqlConnection")
-		    << "saving contactnotification notification_id=" << static_cast<long>(GetLastInsertID());
+		    << "Saving contactnotification notification_id '" << notification_id << "' for notification '" << query.NotificationObject->GetName() << "' with timestamp '" << query.NotificationObjectTime << "'.";
 	}
 }
 
