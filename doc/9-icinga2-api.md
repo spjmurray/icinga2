@@ -180,7 +180,7 @@ Example for an API user with all permissions:
     permissions = [ "*" ]
 
 A yet more sophisticated approach is to specify additional permissions
-and their filters. The latter must be defined as [lambda function](18-language-reference.md#nullary-lambdas)
+and their filters. The latter must be defined as [lambda function](19-language-reference.md#nullary-lambdas)
 returning a boolean expression.
 
 The `permission` attribute contains the action and the specific capitalized

@@ -10,11 +10,11 @@ This documentation will use a similar format like the SELinux User's and Adminis
 
 ### <a id="selinux-policy"></a> Policy
 
-Icinga 2 is providing its own SELinux Policy. At the moment it is not upstreamed to the reference policy because it is under development. Target of the development is a policy package for Red Hat Enterprise Linux 7 and its derivates running the targeted policy which confines Icinga2 with all features and all checks executed.
+Icinga 2 is providing its own SELinux Policy. At the moment it is not upstreamed to the reference policy because it is under development. Target of the development is a policy package for Red Hat Enterprise Linux 7 and its derivates running the targeted policy which confines Icinga2 with all features and all checks executed. All other distributions will require some tweaks.
 
 ### <a id="selinux-policy-installation"></a> Installation
 
-Later the policy will be installed by a seperate package and this section will be removed. Now it describes the installation to support development and testing. It assumes that Icinga 2 is already installed from packages and running on the system.
+There are two ways to install the SELinux Policy for Icinga 2 on Enterprise Linux 7. Installing it from the provided package which is the preferred option and manual installation if you need some fixes not released yet or for development.
 
 The policy package will run the daemon in a permissive domain so nothing will be denied also if the system runs in enforcing mode, so please make sure to run the system in this mode.
 
@@ -31,26 +31,38 @@ The policy package will run the daemon in a permissive domain so nothing will be
 
 You can change the configured mode by editing `/etc/selinux/config` and the current mode by executing `setenforce 0`.
 
+#### <a id="selinux-policy-installation-package"></a> Package installation
+
+The packages are provided with release version 2.4 onwards.
+
+Simply add the selinux subpackage to your installation.
+
+    # yum install icinga2-selinux
+
+After that restart Icinga 2 and verify it running in its own domain `icinga2_t`.
+
+    # systemctl restart icinga2.service
+    # ps -eZ | grep icinga2
+    system_u:system_r:icinga2_t:s0   2825 ?        00:00:00 icinga2
+
+#### <a id="selinux-policy-installation-manual"></a> Manual installation
+
+This section describes the installation to support development and testing. It assumes that Icinga 2 is already installed from packages and running on the system.
+
 As a prerequisite install the `git`, `selinux-policy-devel` and `audit` package. Enable and start the audit daemon afterwards.
 
     # yum install git selinux-policy-devel audit
     # systemctl enable auditd.service
     # systemctl start auditd.service
 
-After that clone the icinga2 git repository and checkout the feature branch.
+After that clone the icinga2 git repository.
 
     # git clone git://git.icinga.org/icinga2.git
-    # cd icinga2/
-    # git checkout feature/rpm-selinux-8332
 
 To create and install the policy package run the installation script which also labels the resources. (The script assumes Icinga 2 was started once after system startup, the labeling of the port will only happen once and fail later on.)
 
     # cd tools/selinux/
     # ./icinga.sh
-
-Some changes to the systemd scripts are also required to handle file contexts correctly. This is at the moment only included in the feature branch, so it has to be copied manually.
-
-    # cp ../../etc/initsystem/{prepare-dirs,safe-reload} /usr/lib/icinga2/
 
 After that restart Icinga 2 and verify it running in its own domain `icinga2_t`.
 
@@ -151,6 +163,9 @@ Before you restart the icinga2 service allow it to connect to all ports by enabl
 If you restart the daemon now it will successfully connect to graphite.
 
 #### <a id="selinux-policy-examples-user"></a> Confining a user
+
+If you want to have an administrative account capable of only managing icinga2 and not the complete system, you can restrict the privileges by confining
+this user. This is completly optional!
 
 Start by adding the Icinga 2 administrator role `icinga2adm_r` to the administrative SELinux user `staff_u`.
 

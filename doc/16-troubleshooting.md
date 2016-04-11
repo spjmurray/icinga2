@@ -13,7 +13,7 @@
 * How was Icinga 2 installed (and which repository in case) and which distribution are you using
 * Provide complete configuration snippets explaining your problem in detail
 * If the check command failed - what's the output of your manual plugin tests?
-* In case of [debugging](20-debug.md#debug) Icinga 2, the full back traces and outputs
+* In case of [debugging](21-debug.md#debug) Icinga 2, the full back traces and outputs
 
 ## <a id="troubleshooting-enable-debug-output"></a> Enable Debug Output
 
@@ -41,7 +41,7 @@ attributes. The tool also shows where each of the attributes was modified.
 >
 > Use the Icinga 2 API to access [config objects at runtime](9-icinga2-api.md#icinga2-api-config-objects) directly.
 
-That way you can also identify which objects have been created from your [apply rules](18-language-reference.md#apply).
+That way you can also identify which objects have been created from your [apply rules](19-language-reference.md#apply).
 
     # icinga2 object list
 
@@ -173,13 +173,13 @@ to `features-enabled` and that the latter is included in [icinga2.conf](4-config
 
 ## <a id="configuration-ignored"></a> Configuration is ignored
 
-* Make sure that the line(s) are not [commented out](18-language-reference.md#comments) (starting with `//` or `#`, or
+* Make sure that the line(s) are not [commented out](19-language-reference.md#comments) (starting with `//` or `#`, or
 encapsulated by `/* ... */`).
 * Is the configuration file included in [icinga2.conf](4-configuring-icinga-2.md#icinga2-conf)?
 
 ## <a id="configuration-attribute-inheritance"></a> Configuration attributes are inherited from
 
-Icinga 2 allows you to import templates using the [import](18-language-reference.md#template-imports) keyword. If these templates
+Icinga 2 allows you to import templates using the [import](19-language-reference.md#template-imports) keyword. If these templates
 contain additional attributes, your objects will automatically inherit them. You can override
 or modify these attributes in the current object.
 

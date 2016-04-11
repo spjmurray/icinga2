@@ -112,12 +112,12 @@ can be specified with the `--app` command-line option.
 
 ### Libraries
 
-Instead of loading libraries using the [`library` config directive](18-language-reference.md#library)
+Instead of loading libraries using the [`library` config directive](19-language-reference.md#library)
 you can also use the `--library` command-line option.
 
 ### Constants
 
-[Global constants](18-language-reference.md#constants) can be set using the `--define` command-line option.
+[Global constants](19-language-reference.md#constants) can be set using the `--define` command-line option.
 
 ### <a id="config-include-path"></a> Config Include Path
 
@@ -138,7 +138,7 @@ added.
 ## <a id="cli-command-console"></a> CLI command: Console
 
 The CLI command `console` can be used to evaluate Icinga config expressions, e.g. to test
-[functions](18-language-reference.md#functions).
+[functions](19-language-reference.md#functions).
 
     $ icinga2 console
     Icinga 2 (version: v2.4.0)
@@ -168,7 +168,7 @@ The `--connect` parameter expects the API URL as string, optionally with basic a
     Icinga 2 (version: v2.4.0)
     <1> =>
 
-Example using [object accessor functions](19-library-reference.md#object-accessor-functions)
+Example using [object accessor functions](20-library-reference.md#object-accessor-functions)
 to fetch the host object for the local node and print its `last_check_result` attribute:
 
     <1> => NodeName
@@ -354,7 +354,7 @@ nodes in a [remote monitoring ](11-icinga2-client.md#icinga2-client) or
 
 The `object` CLI command can be used to list all configuration objects and their
 attributes. The command also shows where each of the attributes was modified.
-That way you can also identify which objects have been created from your [apply rules](18-language-reference.md#apply).
+That way you can also identify which objects have been created from your [apply rules](19-language-reference.md#apply).
 
 More information can be found in the [troubleshooting](16-troubleshooting.md#list-configuration-objects) section.
 
@@ -685,5 +685,5 @@ safely reload the Icinga 2 daemon.
 > which will validate the configuration in a separate process and not stop
 > the other events like check execution, notifications, etc.
 >
-> Details can be found [here](21-migrating-from-icinga-1x.md#differences-1x-2-real-reload).
+> Details can be found [here](22-migrating-from-icinga-1x.md#differences-1x-2-real-reload).
 

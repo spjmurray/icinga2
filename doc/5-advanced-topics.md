@@ -226,7 +226,7 @@ The other way around you can create objects dynamically using your own global fu
 
 Tips when implementing functions:
 
-* Use [log()](19-library-reference.md#global-functions) to dump variables. You can see the output
+* Use [log()](20-library-reference.md#global-functions) to dump variables. You can see the output
 inside the `icinga2.log` file depending in your log severity
 * Use the `icinga2 console` to test basic functionality (e.g. iterating over a dictionary)
 * Build them step-by-step. You can always refactor your code later on.
@@ -255,7 +255,7 @@ dictionary named `compellent` with the key `disks`. This was then used inside se
 The more significant problem was to only add the command parameter `--disk` to the plugin call
 when the dictionary `compellent` contains the key `disks`, and omit it if not found.
 
-By defining `set_if` as [abbreviated lambda function](18-language-reference.md#nullary-lambdas)
+By defining `set_if` as [abbreviated lambda function](19-language-reference.md#nullary-lambdas)
 and evaluating the host custom attribute `compellent` containing the `disks` this problem was
 solved like this:
 
@@ -275,9 +275,9 @@ solved like this:
       }
     }
 
-This implementation uses the dictionary type method [contains](19-library-reference.md#dictionary-contains)
+This implementation uses the dictionary type method [contains](20-library-reference.md#dictionary-contains)
 and will fail if `host.vars.compellent` is not of the type `Dictionary`.
-Therefore you can extend the checks using the [typeof](18-language-reference.md#types) function.
+Therefore you can extend the checks using the [typeof](19-language-reference.md#types) function.
 
 You can test the types using the `icinga2 console`:
 
@@ -370,7 +370,7 @@ You can omit the `log()` calls, they only help debugging.
 
 ## <a id="access-object-attributes-at-runtime"></a> Access Object Attributes at Runtime
 
-The [Object Accessor Functions](19-library-reference.md#object-accessor-functions)
+The [Object Accessor Functions](20-library-reference.md#object-accessor-functions)
 can be used to retrieve references to other objects by name.
 
 This allows you to access configuration and runtime object attributes. A detailed

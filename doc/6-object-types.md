@@ -618,7 +618,7 @@ A group of hosts.
 
 > **Best Practice**
 >
-> Assign host group members using the [group assign](18-language-reference.md#group-assign) rules.
+> Assign host group members using the [group assign](19-language-reference.md#group-assign) rules.
 
 Example:
 
@@ -1237,7 +1237,7 @@ A group of services.
 
 > **Best Practice**
 >
-> Assign service group members using the [group assign](18-language-reference.md#group-assign) rules.
+> Assign service group members using the [group assign](19-language-reference.md#group-assign) rules.
 
 Example:
 
@@ -1424,7 +1424,7 @@ A user group.
 
 > **Best Practice**
 >
-> Assign user group members using the [group assign](18-language-reference.md#group-assign) rules.
+> Assign user group members using the [group assign](19-language-reference.md#group-assign) rules.
 
 Example:
 
@@ -1468,12 +1468,12 @@ Configuration Attributes:
 
 # <a id="value-types"></a> Value Types
 
-In addition to [expressions](18-language-reference.md#expressions)
+In addition to [expressions](19-language-reference.md#expressions)
 used in object attribute assignments such as
 
-* [Numeric](18-language-reference.md#numeric-literals), [duration](18-language-reference.md#duration-literals), [string](18-language-reference.md#string-literals) and [boolean](18-language-reference.md#boolean-literals) literals
-* [Array](18-language-reference.md#array)
-* [Dictionary](18-language-reference.md#dictionary)
+* [Numeric](19-language-reference.md#numeric-literals), [duration](19-language-reference.md#duration-literals), [string](19-language-reference.md#string-literals) and [boolean](19-language-reference.md#boolean-literals) literals
+* [Array](19-language-reference.md#array)
+* [Dictionary](19-language-reference.md#dictionary)
 
 Icinga 2 uses the following value types for runtime attributes
 exposed via the [Icinga 2 API](9-icinga2-api.md#icinga2-api).
